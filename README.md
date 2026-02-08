@@ -122,7 +122,9 @@ const file = new FileKeyStore('./keys.json');
 
 ## Wallet Registration
 
-Link a blockchain wallet to receive x402 payments:
+> For the full x402 protocol reference, signature formats, and deal settlement details, see [skill/PAYMENTS.md](./skill/PAYMENTS.md).
+
+Link a blockchain wallet to receive [x402](https://www.x402.org/) payments:
 
 ```typescript
 // 1. Request challenge
