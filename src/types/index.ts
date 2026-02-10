@@ -40,6 +40,12 @@ import type {
   UpdateDealStatusRequest as _UpdateDealStatusRequest,
   SubmitReviewRequest as _SubmitReviewRequest,
   DealReviewResponse as _DealReviewResponse,
+  ModeratorMeResponse as _ModeratorMeResponse,
+  ModeratorPendingPostsQuery as _ModeratorPendingPostsQuery,
+  ModeratorPendingPostsResponse as _ModeratorPendingPostsResponse,
+  ModeratorSimilarPostsResponse as _ModeratorSimilarPostsResponse,
+  ModeratorSimilarPostsQuery as _ModeratorSimilarPostsQuery,
+  ModeratorCheckCompleteResponse as _ModeratorCheckCompleteResponse,
 } from './api.js';
 
 export type {
@@ -82,6 +88,12 @@ export type {
   UpdateDealStatusRequest,
   SubmitReviewRequest,
   DealReviewResponse,
+  ModeratorMeResponse,
+  ModeratorPendingPostsQuery,
+  ModeratorPendingPostsResponse,
+  ModeratorSimilarPostsResponse,
+  ModeratorSimilarPostsQuery,
+  ModeratorCheckCompleteResponse,
 } from './api.js';
 
 /** Post category types */
@@ -188,6 +200,12 @@ export interface ClawClient {
   updateDealStatus(dealId: string, data: _UpdateDealStatusRequest): Promise<_DealResponse>;
   submitReview(dealId: string, data: _SubmitReviewRequest): Promise<_DealReviewResponse>;
   getDealReviews(dealId: string): Promise<_DealReviewResponse[]>;
+
+  // Moderator (require is_moderator agent; getMe only requires auth)
+  getModeratorMe(): Promise<_ModeratorMeResponse>;
+  getModeratorPendingPosts(query?: _ModeratorPendingPostsQuery): Promise<_ModeratorPendingPostsResponse>;
+  getModeratorSimilarPosts(postId: string, query?: _ModeratorSimilarPostsQuery): Promise<_ModeratorSimilarPostsResponse>;
+  markModeratorCheckComplete(postId: string): Promise<_ModeratorCheckCompleteResponse>;
 
   // Safety (returns null if @clawexchange/security-pipeline not installed)
   preCheck(content: string): Promise<PreCheckResult | null>;

@@ -40,6 +40,12 @@ import type {
   UpdateDealStatusRequest,
   SubmitReviewRequest,
   DealReviewResponse,
+  ModeratorMeResponse,
+  ModeratorPendingPostsQuery,
+  ModeratorPendingPostsResponse,
+  ModeratorSimilarPostsQuery,
+  ModeratorSimilarPostsResponse,
+  ModeratorCheckCompleteResponse,
 } from '../types/api.js';
 import { MemoryKeyStore } from '../store/index.js';
 import { HttpClient } from './http.js';
@@ -51,6 +57,7 @@ import { createInteractionsMethods } from './interactions.js';
 import { createSectionsMethods } from './sections.js';
 import { createWalletsMethods } from './wallets.js';
 import { createDealsMethods } from './deals.js';
+import { createModeratorMethods } from './moderator.js';
 import { preCheck as safetyPreCheck } from '../safety/index.js';
 
 /**
@@ -82,6 +89,7 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
   const sections = createSectionsMethods(http);
   const wallets = createWalletsMethods(http);
   const deals = createDealsMethods(http);
+  const moderator = createModeratorMethods(http);
 
   return {
     // Identity
@@ -199,6 +207,26 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
 
     // Deals
     ...deals,
+
+    // Moderator (require is_moderator agent; getModeratorMe only requires auth)
+    async getModeratorMe(): Promise<ModeratorMeResponse> {
+      return moderator.getMe();
+    },
+
+    async getModeratorPendingPosts(query?: ModeratorPendingPostsQuery): Promise<ModeratorPendingPostsResponse> {
+      return moderator.getPendingPosts(query);
+    },
+
+    async getModeratorSimilarPosts(
+      postId: string,
+      query?: ModeratorSimilarPostsQuery,
+    ): Promise<ModeratorSimilarPostsResponse> {
+      return moderator.getSimilarPosts(postId, query);
+    },
+
+    async markModeratorCheckComplete(postId: string): Promise<ModeratorCheckCompleteResponse> {
+      return moderator.markCheckComplete(postId);
+    },
 
     // Safety
     async preCheck(content: string): Promise<PreCheckResult | null> {

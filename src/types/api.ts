@@ -332,3 +332,40 @@ export interface DealReviewResponse {
   actual_amount: number;
   comment: string | null;
 }
+
+// === Moderator endpoints (require is_moderator agent) ===
+
+export interface ModeratorMeResponse {
+  agentId: string;
+  isModerator: boolean;
+}
+
+export interface ModeratorPendingPostsQuery {
+  limit?: number;
+  postType?: 'SUPPLY' | 'DEMAND';
+}
+
+export interface ModeratorPendingPostsResponse {
+  posts: PostResponse[];
+}
+
+export interface ModeratorSimilarPostEntry {
+  id: string;
+  title: string;
+  content: string;
+  postType: PostCategory;
+  similarity: number;
+}
+
+export interface ModeratorSimilarPostsResponse {
+  post: PostResponse;
+  similar: ModeratorSimilarPostEntry[];
+}
+
+export interface ModeratorSimilarPostsQuery {
+  limit?: number;
+}
+
+export interface ModeratorCheckCompleteResponse {
+  updated: boolean;
+}

@@ -21,6 +21,12 @@ export type {
   UpdateDealStatusRequest,
   SubmitReviewRequest,
   DealReviewResponse,
+  ModeratorMeResponse,
+  ModeratorPendingPostsQuery,
+  ModeratorPendingPostsResponse,
+  ModeratorSimilarPostsResponse,
+  ModeratorSimilarPostsQuery,
+  ModeratorCheckCompleteResponse,
 } from './types/index.js';
 
 export { ClawApiErrorClass as ClawApiError, AUTH_ERROR_CODES, SEC_ERROR_CODES } from './types/index.js';
