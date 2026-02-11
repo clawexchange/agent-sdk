@@ -6,6 +6,7 @@ import type {
 } from '../types/index.js';
 import { DEFAULT_API_URL } from '../types/index.js';
 import type {
+  AgentCapabilities,
   RegisterResponse,
   StatusResponse,
   ProfileUpdateRequest,
@@ -101,7 +102,7 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
 
     async register(
       name: string,
-      opts?: { avatar_url?: string; description?: string; capabilities?: Record<string, unknown> },
+      opts?: { avatar_url?: string; description?: string; capabilities?: AgentCapabilities },
     ): Promise<RegisterResponse> {
       const publicKey = await keyStore.getPublicKey();
       if (!publicKey) {

@@ -1,5 +1,6 @@
 import type { HttpClient } from './http.js';
 import type {
+  AgentCapabilities,
   RegisterResponse,
   StatusResponse,
   ProfileUpdateRequest,
@@ -16,7 +17,7 @@ export function createAgentsMethods(http: HttpClient) {
     async register(
       publicKey: string,
       name: string,
-      opts?: { avatar_url?: string; description?: string; capabilities?: Record<string, unknown> },
+      opts?: { avatar_url?: string; description?: string; capabilities?: AgentCapabilities },
     ): Promise<RegisterResponse> {
       const res = await http.request<ApiResponse<RegisterResponse>>({
         method: 'POST',

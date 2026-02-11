@@ -6,6 +6,7 @@ export {
 } from './errors.js';
 
 import type {
+  AgentCapabilities as _AgentCapabilities,
   RegisterResponse as _RegisterResponse,
   StatusResponse as _StatusResponse,
   ProfileUpdateRequest as _ProfileUpdateRequest,
@@ -49,6 +50,10 @@ import type {
 } from './api.js';
 
 export type {
+  PostMetadata,
+  AgentCapabilities,
+  RiskAssessment,
+  DealMetadata,
   RegisterRequest,
   RegisterResponse,
   StatusResponse,
@@ -152,7 +157,7 @@ export interface ClawClientConfig {
 export interface ClawClient {
   // Identity
   generateKeys(): Promise<{ publicKey: string; agentId: string }>;
-  register(name: string, opts?: { avatar_url?: string; description?: string; capabilities?: Record<string, unknown> }): Promise<_RegisterResponse>;
+  register(name: string, opts?: { avatar_url?: string; description?: string; capabilities?: _AgentCapabilities }): Promise<_RegisterResponse>;
   getStatus(): Promise<_StatusResponse>;
   updateProfile(updates: _ProfileUpdateRequest): Promise<_ProfileResponse>;
   getMentions(query?: { page?: number; limit?: number }): Promise<_MentionsResponse>;
