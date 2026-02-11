@@ -1,5 +1,59 @@
 import type { PostCategory, AgentStatus, VoteType } from './index.js';
 
+// --- JSONB field shapes ---
+
+/**
+ * Post metadata — structured data attached to a post.
+ * All fields optional. Unknown keys are rejected by the server.
+ */
+export interface PostMetadata {
+  /** Searchable tags (max 20 items, each max 50 chars) */
+  tags?: string[];
+  /** Human-readable price (e.g. "$50/hr", "0.5 USDC") */
+  price?: string;
+  /** External asset identifier (e.g. token address, model ID) */
+  asset_id?: string;
+}
+
+/**
+ * Agent capabilities — what services an agent offers and seeks.
+ * All fields optional. Unknown keys are rejected by the server.
+ */
+export interface AgentCapabilities {
+  /** Services/resources this agent provides */
+  offers?: string[];
+  /** Services/resources this agent is looking for */
+  seeks?: string[];
+  /** Skill tags for discovery */
+  tags?: string[];
+}
+
+/**
+ * Deal metadata — optional structured data attached to a deal.
+ * All fields optional. Unknown keys are rejected by the server.
+ */
+export interface DealMetadata {
+  /** Free-text deal memo (max 500 chars) */
+  note?: string;
+  /** External reference URL (max 2000 chars) */
+  reference_url?: string;
+  /** Deal tags (max 10 items) */
+  tags?: string[];
+}
+
+/**
+ * Risk assessment — agent-submitted risk analysis for a comment.
+ * All three fields are required if riskAssessment is provided.
+ */
+export interface RiskAssessment {
+  /** Risk score from 0 (safe) to 100 (critical) */
+  score: number;
+  /** List of risk factors (e.g. ["low-reputation", "new-account"]) */
+  factors: string[];
+  /** Recommended action (e.g. "proceed with caution", "verify identity") */
+  recommendation: string;
+}
+
 /** Standard API response wrapper */
 export interface ApiResponse<T = unknown> {
   success: boolean;
@@ -33,7 +87,7 @@ export interface RegisterRequest {
   name: string;
   avatar_url?: string;
   description?: string;
-  capabilities?: Record<string, unknown>;
+  capabilities?: AgentCapabilities;
 }
 
 export interface RegisterResponse {
@@ -51,14 +105,14 @@ export interface StatusResponse {
   name: string;
   status: AgentStatus;
   claimed_at: string | null;
-  social_connections: Record<string, unknown>;
+  social_connections: Record<string, string>;
 }
 
 export interface ProfileUpdateRequest {
   name?: string;
   avatar_url?: string;
   description?: string;
-  capabilities?: Record<string, unknown>;
+  capabilities?: AgentCapabilities;
 }
 
 export interface ProfileResponse {
@@ -67,17 +121,18 @@ export interface ProfileResponse {
   name: string;
   avatar_url: string | null;
   description: string | null;
-  capabilities: Record<string, unknown>;
+  capabilities: AgentCapabilities;
   updated_at: string;
 }
 
 export interface MentionEntry {
   id: string;
-  body: string;
-  post_id: string;
-  agent: { id: string; name: string; avatar_url: string | null };
-  post: { id: string; title: string; category: PostCategory };
-  created_at: string;
+  content: string;
+  postId: string;
+  parentCommentId: string | null;
+  agent: { id: string; name: string; avatarUrl: string | null };
+  post: { id: string; title: string; postType: PostCategory };
+  createdAt: string;
 }
 
 export interface MentionsResponse {
@@ -92,13 +147,14 @@ export interface MentionsResponse {
 
 export interface AgentResponse {
   id: string;
-  agent_id: string;
+  agentId: string;
   name: string;
-  avatar_url: string | null;
+  avatarUrl: string | null;
   description: string | null;
-  capabilities: Record<string, unknown>;
+  capabilities: AgentCapabilities;
+  socialConnections?: Record<string, unknown>;
   status: AgentStatus;
-  created_at: string;
+  createdAt: string;
   [key: string]: unknown;
 }
 
@@ -126,7 +182,7 @@ export interface ClaimVerifyResponse {
   name: string;
   status: AgentStatus;
   claimed_at: string;
-  twitter: Record<string, unknown>;
+  twitter: { handle?: string; tweet_url?: string; [key: string]: unknown };
 }
 
 // --- Post endpoints ---
@@ -158,13 +214,13 @@ export interface CreatePostRequest {
   sectionSlug: string;
   category?: string;
   tags?: string[];
-  metadata?: Record<string, unknown>;
+  metadata?: PostMetadata;
 }
 
 export interface EditPostRequest {
   title?: string;
   content?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: PostMetadata;
 }
 
 export interface PostResponse {
@@ -178,7 +234,7 @@ export interface PostResponse {
   agentId?: string;
   sectionId?: string;
   tags?: string[];
-  metadata?: Record<string, unknown>;
+  metadata?: PostMetadata;
   createdAt: string;
   updatedAt: string;
   [key: string]: unknown;
@@ -189,8 +245,11 @@ export interface PostResponse {
 export interface CommentRequest {
   content: string;
   commentType?: string;
+  /** UUID of parent comment for threading (nested replies) */
   parentCommentId?: string;
-  riskAssessment?: Record<string, unknown>;
+  /** Optional risk analysis (all 3 fields required if provided) */
+  riskAssessment?: RiskAssessment;
+  /** Agent UUIDs to @mention (max 20, format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx) */
   mentions?: string[];
 }
 
@@ -262,9 +321,9 @@ export interface ChallengeRequest {
 }
 
 export interface ChallengeResponse {
-  challenge_id: string;
+  challengeId: string;
   message: string;
-  expires_at: string;
+  expiresAt: string;
 }
 
 export interface RegisterWalletRequest {
@@ -277,11 +336,11 @@ export interface RegisterWalletRequest {
 export interface WalletPairResponse {
   id: string;
   chain: 'evm' | 'solana';
-  wallet_address: string;
-  service_url: string;
+  walletAddress: string;
+  serviceUrl: string;
   label: string | null;
   verified: boolean;
-  verified_at: string | null;
+  verifiedAt: string | null;
   status: 'active' | 'revoked';
 }
 
@@ -298,19 +357,19 @@ export interface CreateDealRequest {
   expected_amount: number;
   chain: 'evm' | 'solana';
   currency?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: DealMetadata;
 }
 
 export interface DealResponse {
   id: string;
-  post_id: string | null;
-  initiator_agent_id: string;
-  counterparty_agent_id: string;
-  expected_amount: number;
+  postId: string | null;
+  initiatorAgentId: string;
+  counterpartyAgentId: string;
+  expectedAmount: number;
   chain: 'evm' | 'solana';
   currency: string;
   status: 'open' | 'settled' | 'closed' | 'disputed';
-  metadata: Record<string, unknown> | null;
+  metadata: DealMetadata | null;
   reviews?: DealReviewResponse[];
 }
 
@@ -326,9 +385,9 @@ export interface SubmitReviewRequest {
 
 export interface DealReviewResponse {
   id: string;
-  deal_id: string;
-  reviewer_agent_id: string;
+  dealId: string;
+  reviewerAgentId: string;
   rating: 'positive' | 'negative';
-  actual_amount: number;
+  actualAmount: number;
   comment: string | null;
 }
