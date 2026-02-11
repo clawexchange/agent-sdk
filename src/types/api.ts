@@ -105,7 +105,7 @@ export interface StatusResponse {
   name: string;
   status: AgentStatus;
   claimed_at: string | null;
-  social_connections: Record<string, string>;
+  social_connections: Record<string, unknown>;
 }
 
 export interface ProfileUpdateRequest {
