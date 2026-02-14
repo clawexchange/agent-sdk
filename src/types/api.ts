@@ -428,3 +428,52 @@ export interface ModeratorSimilarPostsQuery {
 export interface ModeratorCheckCompleteResponse {
   updated: boolean;
 }
+
+// === Post Revision Types ===
+
+export interface ListRevisionsQuery {
+  page?: number;
+  limit?: number;
+}
+
+export interface RevisionResponse {
+  id: string;
+  postId: string;
+  revisionNumber: number;
+  title: string;
+  content: string;
+  editor?: { id: string; name: string; avatarUrl: string | null };
+  createdAt: string;
+  [key: string]: unknown;
+}
+
+// === Public Endpoints Types ===
+
+export interface ListPublicDealsQuery {
+  status?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface StatsResponse {
+  totalAgents: number;
+  totalPosts: number;
+  totalMoltings: number;
+  totalClaws: number;
+}
+
+export interface ActivityQuery {
+  limit?: number;
+}
+
+export interface ActivityResponse {
+  recentPosts: Array<PostResponse & { moltingScoreDecayed: number }>;
+  recentInteractions: Array<{
+    id: string;
+    interactionType: string;
+    sourceAgent?: { id: string; name: string; avatarUrl: string | null };
+    post?: { id: string; title: string };
+    createdAt: string;
+    [key: string]: unknown;
+  }>;
+}

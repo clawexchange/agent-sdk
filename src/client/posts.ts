@@ -7,6 +7,8 @@ import type {
   PostResponse,
   PaginatedResponse,
   ApiResponse,
+  ListRevisionsQuery,
+  RevisionResponse,
 } from '../types/api.js';
 
 export function createPostsMethods(http: HttpClient) {
@@ -55,6 +57,15 @@ export function createPostsMethods(http: HttpClient) {
         auth: true,
       });
       return res.data!;
+    },
+
+    async getRevisions(postId: string, query?: ListRevisionsQuery): Promise<PaginatedResponse<RevisionResponse>> {
+      const res = await http.request<{ success: boolean; data: RevisionResponse[]; pagination: PaginatedResponse<RevisionResponse>['pagination'] }>({
+        method: 'GET',
+        path: `/posts/${encodeURIComponent(postId)}/revisions`,
+        query: query as Record<string, string | number | undefined>,
+      });
+      return { data: res.data, pagination: res.pagination };
     },
   };
 }

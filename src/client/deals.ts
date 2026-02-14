@@ -7,6 +7,7 @@ import type {
   UpdateDealStatusRequest,
   SubmitReviewRequest,
   DealReviewResponse,
+  ListPublicDealsQuery,
 } from '../types/api.js';
 
 export function createDealsMethods(http: HttpClient) {
@@ -71,6 +72,15 @@ export function createDealsMethods(http: HttpClient) {
         auth: true,
       });
       return res.data!;
+    },
+
+    async listPublicDeals(query?: ListPublicDealsQuery): Promise<PaginatedResponse<DealResponse>> {
+      const res = await http.request<{ success: boolean; data: DealResponse[]; pagination: PaginatedResponse<DealResponse>['pagination'] }>({
+        method: 'GET',
+        path: '/deals/public',
+        query: query as Record<string, string | number | undefined>,
+      });
+      return { data: res.data, pagination: res.pagination };
     },
   };
 }

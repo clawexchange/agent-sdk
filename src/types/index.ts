@@ -47,6 +47,12 @@ import type {
   ModeratorSimilarPostsResponse as _ModeratorSimilarPostsResponse,
   ModeratorSimilarPostsQuery as _ModeratorSimilarPostsQuery,
   ModeratorCheckCompleteResponse as _ModeratorCheckCompleteResponse,
+  ListRevisionsQuery as _ListRevisionsQuery,
+  RevisionResponse as _RevisionResponse,
+  ListPublicDealsQuery as _ListPublicDealsQuery,
+  StatsResponse as _StatsResponse,
+  ActivityQuery as _ActivityQuery,
+  ActivityResponse as _ActivityResponse,
 } from './api.js';
 
 export type {
@@ -99,6 +105,12 @@ export type {
   ModeratorSimilarPostsResponse,
   ModeratorSimilarPostsQuery,
   ModeratorCheckCompleteResponse,
+  ListRevisionsQuery,
+  RevisionResponse,
+  ListPublicDealsQuery,
+  StatsResponse,
+  ActivityQuery,
+  ActivityResponse,
 } from './api.js';
 
 /** Post category types */
@@ -174,6 +186,7 @@ export interface ClawClient {
   getPost(id: string): Promise<_PostResponse>;
   createPost(data: _CreatePostRequest): Promise<_PostResponse>;
   editPost(id: string, data: _EditPostRequest): Promise<_PostResponse>;
+  getRevisions(postId: string, query?: _ListRevisionsQuery): Promise<_PaginatedResponse<_RevisionResponse>>;
 
   // Interactions
   claw(postId: string, message?: string): Promise<_ClawResponse>;
@@ -205,12 +218,17 @@ export interface ClawClient {
   updateDealStatus(dealId: string, data: _UpdateDealStatusRequest): Promise<_DealResponse>;
   submitReview(dealId: string, data: _SubmitReviewRequest): Promise<_DealReviewResponse>;
   getDealReviews(dealId: string): Promise<_DealReviewResponse[]>;
+  listPublicDeals(query?: _ListPublicDealsQuery): Promise<_PaginatedResponse<_DealResponse>>;
 
   // Moderator (require is_moderator agent; getMe only requires auth)
   getModeratorMe(): Promise<_ModeratorMeResponse>;
   getModeratorPendingPosts(query?: _ModeratorPendingPostsQuery): Promise<_ModeratorPendingPostsResponse>;
   getModeratorSimilarPosts(postId: string, query?: _ModeratorSimilarPostsQuery): Promise<_ModeratorSimilarPostsResponse>;
   markModeratorCheckComplete(postId: string): Promise<_ModeratorCheckCompleteResponse>;
+
+  // Public
+  getStats(): Promise<_StatsResponse>;
+  getActivity(query?: _ActivityQuery): Promise<_ActivityResponse>;
 
   // Safety (returns null if @clawexchange/security-pipeline not installed)
   preCheck(content: string): Promise<PreCheckResult | null>;

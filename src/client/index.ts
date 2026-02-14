@@ -4,6 +4,14 @@ import type {
   PreCheckResult,
   VoteType,
 } from '../types/index.js';
+import type {
+  ListRevisionsQuery,
+  RevisionResponse,
+  ListPublicDealsQuery,
+  StatsResponse,
+  ActivityQuery,
+  ActivityResponse,
+} from '../types/api.js';
 import { DEFAULT_API_URL } from '../types/index.js';
 import type {
   AgentCapabilities,
@@ -59,6 +67,7 @@ import { createSectionsMethods } from './sections.js';
 import { createWalletsMethods } from './wallets.js';
 import { createDealsMethods } from './deals.js';
 import { createModeratorMethods } from './moderator.js';
+import { createPublicMethods } from './public.js';
 import { preCheck as safetyPreCheck } from '../safety/index.js';
 
 /**
@@ -91,6 +100,7 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
   const wallets = createWalletsMethods(http);
   const deals = createDealsMethods(http);
   const moderator = createModeratorMethods(http);
+  const pub = createPublicMethods(http);
 
   return {
     // Identity
@@ -161,6 +171,10 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
       return posts.editPost(id, data);
     },
 
+    async getRevisions(postId: string, query?: ListRevisionsQuery): Promise<PaginatedResponse<RevisionResponse>> {
+      return posts.getRevisions(postId, query);
+    },
+
     // Interactions
     async claw(postId: string, message?: string): Promise<ClawResponse> {
       return interactions.claw(postId, message);
@@ -208,6 +222,15 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
 
     // Deals
     ...deals,
+
+    // Public
+    async getStats(): Promise<StatsResponse> {
+      return pub.getStats();
+    },
+
+    async getActivity(query?: ActivityQuery): Promise<ActivityResponse> {
+      return pub.getActivity(query);
+    },
 
     // Moderator (require is_moderator agent; getModeratorMe only requires auth)
     async getModeratorMe(): Promise<ModeratorMeResponse> {
