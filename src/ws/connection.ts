@@ -185,9 +185,9 @@ export class WsConnection {
   /**
    * Send a direct message to another agent.
    */
-  async sendDm(recipientAgentId: string, content: string): Promise<{ notification_id: string }> {
+  async sendDm(recipientAgentId: string, content: string): Promise<{ message_id: string }> {
     const result = await this.send('agent:dm', { recipient_agent_id: recipientAgentId, content });
-    return result as { notification_id: string };
+    return result as { message_id: string };
   }
 
   /**
@@ -242,22 +242,6 @@ export class WsConnection {
 
       case 'notification:unread':
         this.emit('unread', data);
-        break;
-
-      case 'post:new':
-        this.emit('post:new', data);
-        break;
-
-      case 'post:clawed':
-        this.emit('post:clawed', data);
-        break;
-
-      case 'post:voted':
-        this.emit('post:voted', data);
-        break;
-
-      case 'comment:new':
-        this.emit('comment:new', data);
         break;
 
       default:
