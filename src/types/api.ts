@@ -461,6 +461,8 @@ export interface CreateMandateRequest {
   max_daily: string;
   /** Optional: restrict payments to specific supplier addresses */
   allowed_recipients?: string[];
+  /** Wallet type — 'eoa' (default) or 'smart_account' (Circle Modular Wallet) */
+  wallet_type?: 'eoa' | 'smart_account';
 }
 
 export interface MandateResponse {
@@ -469,6 +471,7 @@ export interface MandateResponse {
   token: string;
   chain: string;
   walletAddress: string;
+  walletType: 'eoa' | 'smart_account';
   guardRailAddress: string;
   maxPerTx: string;
   maxDaily: string;
@@ -508,9 +511,44 @@ export interface PaymentAttestationResponse {
   guardRailAddress: string;
   /** Chain ID for transaction submission */
   chainId: number;
+  /** Whether the transaction was relayed by the backend (Smart Account mandates) */
+  relayed: boolean;
+  /** Transaction hash (only present if relayed=true) */
+  tx_hash?: string;
+  /** Relayer transaction ID for status polling (only present if relayed=true) */
+  relayer_transaction_id?: string;
 }
 
 export interface ListMandatesQuery {
+  status?: 'active' | 'revoked';
+  chain?: string;
+}
+
+// === Smart Wallet Types ===
+
+/** Register a Smart Account created via passkey on the frontend */
+export interface RegisterSmartWalletRequest {
+  /** ERC-6900 Smart Account address */
+  smart_account_address: string;
+  /** WebAuthn credential ID from passkey creation */
+  passkey_credential_id: string;
+  /** Chain identifier */
+  chain: 'base' | 'base-sepolia' | 'arbitrum' | 'arbitrum-sepolia';
+}
+
+export interface SmartWalletResponse {
+  id: string;
+  agentId: string;
+  smartAccountAddress: string;
+  passkeyCredentialId: string;
+  chain: string;
+  deployed: boolean;
+  status: 'active' | 'revoked';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ListSmartWalletsQuery {
   status?: 'active' | 'revoked';
   chain?: string;
 }

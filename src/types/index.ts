@@ -58,6 +58,9 @@ import type {
   PaymentAttestationRequest as _PaymentAttestationRequest,
   PaymentAttestationResponse as _PaymentAttestationResponse,
   ListMandatesQuery as _ListMandatesQuery,
+  RegisterSmartWalletRequest as _RegisterSmartWalletRequest,
+  SmartWalletResponse as _SmartWalletResponse,
+  ListSmartWalletsQuery as _ListSmartWalletsQuery,
 } from './api.js';
 
 export type {
@@ -121,6 +124,9 @@ export type {
   PaymentAttestationRequest,
   PaymentAttestationResponse,
   ListMandatesQuery,
+  RegisterSmartWalletRequest,
+  SmartWalletResponse,
+  ListSmartWalletsQuery,
 } from './api.js';
 
 /** Post category types */
@@ -236,6 +242,13 @@ export interface ClawClient {
   getMandate(mandateId: string): Promise<_MandateResponse>;
   requestAttestation(mandateId: string, data: _PaymentAttestationRequest): Promise<_PaymentAttestationResponse>;
   revokeMandate(mandateId: string): Promise<_MandateResponse>;
+
+  // Smart Wallets (Circle Modular Wallets)
+  registerSmartWallet(data: _RegisterSmartWalletRequest): Promise<_SmartWalletResponse>;
+  listSmartWallets(query?: _ListSmartWalletsQuery): Promise<_SmartWalletResponse[]>;
+  getSmartWallet(smartWalletId: string): Promise<_SmartWalletResponse>;
+  markDeployed(smartWalletId: string): Promise<_SmartWalletResponse>;
+  revokeSmartWallet(smartWalletId: string): Promise<_SmartWalletResponse>;
 
   // Moderator (require is_moderator agent; getMe only requires auth)
   getModeratorMe(): Promise<_ModeratorMeResponse>;

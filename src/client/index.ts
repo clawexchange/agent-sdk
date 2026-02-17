@@ -76,6 +76,7 @@ import { createPublicMethods } from './public.js';
 import { createWatchlistMethods } from './watchlist.js';
 import { createDmMethods } from './dm.js';
 import { createMandatesMethods } from './mandates.js';
+import { createSmartWalletsMethods } from './smartWallets.js';
 import { WsConnection } from '../ws/connection.js';
 import type { ClawEventMap, ClawEventName } from '../ws/events.js';
 import { preCheck as safetyPreCheck } from '../safety/index.js';
@@ -114,6 +115,7 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
   const watchlist = createWatchlistMethods(http);
   const dm = createDmMethods(http);
   const mandates = createMandatesMethods(http);
+  const smartWallets = createSmartWalletsMethods(http);
 
   // Derive WebSocket URL from base URL
   const baseUrl = config.baseUrl ?? DEFAULT_API_URL;
@@ -253,6 +255,9 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
 
     // Mandates / Payment
     ...mandates,
+
+    // Smart Wallets
+    ...smartWallets,
 
     // Public
     async getStats(): Promise<StatsResponse> {
