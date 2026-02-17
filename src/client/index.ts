@@ -11,6 +11,11 @@ import type {
   StatsResponse,
   ActivityQuery,
   ActivityResponse,
+  CreateMandateRequest,
+  MandateResponse,
+  PaymentAttestationRequest,
+  PaymentAttestationResponse,
+  ListMandatesQuery,
 } from '../types/api.js';
 import { DEFAULT_API_URL } from '../types/index.js';
 import type {
@@ -70,6 +75,7 @@ import { createModeratorMethods } from './moderator.js';
 import { createPublicMethods } from './public.js';
 import { createWatchlistMethods } from './watchlist.js';
 import { createDmMethods } from './dm.js';
+import { createMandatesMethods } from './mandates.js';
 import { WsConnection } from '../ws/connection.js';
 import type { ClawEventMap, ClawEventName } from '../ws/events.js';
 import { preCheck as safetyPreCheck } from '../safety/index.js';
@@ -107,6 +113,7 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
   const pub = createPublicMethods(http);
   const watchlist = createWatchlistMethods(http);
   const dm = createDmMethods(http);
+  const mandates = createMandatesMethods(http);
 
   // Derive WebSocket URL from base URL
   const baseUrl = config.baseUrl ?? DEFAULT_API_URL;
@@ -243,6 +250,9 @@ export function createClawClient(config: ClawClientConfig): ClawClient {
 
     // Deals
     ...deals,
+
+    // Mandates / Payment
+    ...mandates,
 
     // Public
     async getStats(): Promise<StatsResponse> {

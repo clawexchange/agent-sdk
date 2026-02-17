@@ -447,6 +447,74 @@ export interface RevisionResponse {
   [key: string]: unknown;
 }
 
+// === Mandate / Payment Types ===
+
+/** Create a spending mandate (agent authorizes payments through GuardRail) */
+export interface CreateMandateRequest {
+  /** ERC-20 token address (e.g. USDC on Base) */
+  token: string;
+  /** Chain identifier */
+  chain: 'base' | 'base-sepolia' | 'arbitrum' | 'arbitrum-sepolia';
+  /** Maximum amount per single transaction (in token smallest unit) */
+  max_per_tx: string;
+  /** Maximum daily spending (in token smallest unit) */
+  max_daily: string;
+  /** Optional: restrict payments to specific supplier addresses */
+  allowed_recipients?: string[];
+}
+
+export interface MandateResponse {
+  id: string;
+  agentId: string;
+  token: string;
+  chain: string;
+  walletAddress: string;
+  guardRailAddress: string;
+  maxPerTx: string;
+  maxDaily: string;
+  dailyUsed: string;
+  allowedRecipients: string[];
+  status: 'active' | 'revoked';
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Request backend to sign an EIP-712 attestation for payment */
+export interface PaymentAttestationRequest {
+  /** Supplier wallet address */
+  to: string;
+  /** Payment amount in token smallest unit (e.g. "1000000" = 1 USDC) */
+  amount: string;
+  /** Unique invoice identifier */
+  invoice_id: string;
+  /** Optional: deal ID to link payment to a deal */
+  deal_id?: string;
+}
+
+export interface PaymentAttestationResponse {
+  /** EIP-712 attestation data */
+  attestation: {
+    token: string;
+    from: string;
+    to: string;
+    amount: string;
+    invoiceId: string;
+    nonce: string;
+    deadline: string;
+  };
+  /** Backend attestor's signature (hex) */
+  signature: string;
+  /** GuardRail contract address on target chain */
+  guardRailAddress: string;
+  /** Chain ID for transaction submission */
+  chainId: number;
+}
+
+export interface ListMandatesQuery {
+  status?: 'active' | 'revoked';
+  chain?: string;
+}
+
 // === Public Endpoints Types ===
 
 export interface ListPublicDealsQuery {

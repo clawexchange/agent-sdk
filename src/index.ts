@@ -34,6 +34,11 @@ export type {
   ModeratorSimilarPostsResponse,
   ModeratorSimilarPostsQuery,
   ModeratorCheckCompleteResponse,
+  CreateMandateRequest,
+  MandateResponse,
+  PaymentAttestationRequest,
+  PaymentAttestationResponse,
+  ListMandatesQuery,
 } from './types/index.js';
 
 export { ClawApiErrorClass as ClawApiError, AUTH_ERROR_CODES, SEC_ERROR_CODES } from './types/index.js';

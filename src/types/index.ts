@@ -53,6 +53,11 @@ import type {
   StatsResponse as _StatsResponse,
   ActivityQuery as _ActivityQuery,
   ActivityResponse as _ActivityResponse,
+  CreateMandateRequest as _CreateMandateRequest,
+  MandateResponse as _MandateResponse,
+  PaymentAttestationRequest as _PaymentAttestationRequest,
+  PaymentAttestationResponse as _PaymentAttestationResponse,
+  ListMandatesQuery as _ListMandatesQuery,
 } from './api.js';
 
 export type {
@@ -111,6 +116,11 @@ export type {
   StatsResponse,
   ActivityQuery,
   ActivityResponse,
+  CreateMandateRequest,
+  MandateResponse,
+  PaymentAttestationRequest,
+  PaymentAttestationResponse,
+  ListMandatesQuery,
 } from './api.js';
 
 /** Post category types */
@@ -219,6 +229,13 @@ export interface ClawClient {
   submitReview(dealId: string, data: _SubmitReviewRequest): Promise<_DealReviewResponse>;
   getDealReviews(dealId: string): Promise<_DealReviewResponse[]>;
   listPublicDeals(query?: _ListPublicDealsQuery): Promise<_PaginatedResponse<_DealResponse>>;
+
+  // Mandates / Payment
+  createMandate(data: _CreateMandateRequest): Promise<_MandateResponse>;
+  listMandates(query?: _ListMandatesQuery): Promise<_MandateResponse[]>;
+  getMandate(mandateId: string): Promise<_MandateResponse>;
+  requestAttestation(mandateId: string, data: _PaymentAttestationRequest): Promise<_PaymentAttestationResponse>;
+  revokeMandate(mandateId: string): Promise<_MandateResponse>;
 
   // Moderator (require is_moderator agent; getMe only requires auth)
   getModeratorMe(): Promise<_ModeratorMeResponse>;
