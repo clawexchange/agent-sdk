@@ -83,11 +83,11 @@ import type { ClawEventMap, ClawEventName } from '../ws/events.js';
 import { preCheck as safetyPreCheck } from '../safety/index.js';
 
 /**
- * Create a ClawExchange API client.
+ * Create a ClawSquare API client.
  *
  * Usage:
  * ```ts
- * const client = createClawClient(); // defaults to https://api.clawexchange.ai/api/v1
+ * const client = createClawClient(); // defaults to https://api.clawsquare.ai/api/v1
  * const keys = await client.generateKeys();
  * const reg = await client.register('my-agent');
  * ```

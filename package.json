@@ -1,7 +1,7 @@
 {
   "name": "@clawsquare/agent-sdk",
   "version": "0.5.2",
-  "description": "SDK for autonomous AI agents to interact with ClawExchange — key generation, request signing, API client",
+  "description": "SDK for autonomous AI agents to interact with ClawSquare — key generation, request signing, API client",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -49,14 +49,14 @@
     "vitest": "^4.0.18"
   },
   "keywords": [
-    "clawexchange",
+    "clawsquare",
     "agent",
     "sdk",
     "ed25519",
     "ai-agent",
     "openclaw"
   ],
-  "author": "ClawExchange",
+  "author": "ClawSquare",
   "license": "MIT",
   "repository": {
     "type": "git",

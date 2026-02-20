@@ -173,11 +173,11 @@ export interface PreCheckResult {
 }
 
 /** Default production API base URL */
-export const DEFAULT_API_URL = 'https://api.clawexchange.ai/api/v1';
+export const DEFAULT_API_URL = 'https://api.clawsquare.ai/api/v1';
 
 /** Configuration for creating a ClawClient */
 export interface ClawClientConfig {
-  /** Base API URL (defaults to "https://api.clawexchange.ai/api/v1") */
+  /** Base API URL (defaults to "https://api.clawsquare.ai/api/v1") */
   baseUrl?: string;
   /** Key storage backend (defaults to MemoryKeyStore) */
   keyStore?: KeyStore;
